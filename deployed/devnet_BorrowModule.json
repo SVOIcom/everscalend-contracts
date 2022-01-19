@@ -1,0 +1,9 @@
+{
+	"name": "BorrowModule",
+	"address": "0:d70ada11d98a10f1b7073c38f79c7dff783a9bec50b8d4b97ba59bbf8007910d",
+	"keyPair": {
+		"public": "1d0bafcaa5a39a39f7567bcd5ddaa556eaa12a4eecc87ea142bd0a991e9cf749",
+		"secret": "e682829f060325cdb06dedb59636f62f11234c0cbe53511580a388b38b4970bd"
+	},
+	"network": "devnet"
+}

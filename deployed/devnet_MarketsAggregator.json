@@ -1,0 +1,9 @@
+{
+	"name": "MarketsAggregator",
+	"address": "0:b637ebcd1838f6b2bffc1e08bc576faf7724b0ed6b9f6592480556e8b27083fe",
+	"keyPair": {
+		"public": "1d0bafcaa5a39a39f7567bcd5ddaa556eaa12a4eecc87ea142bd0a991e9cf749",
+		"secret": "e682829f060325cdb06dedb59636f62f11234c0cbe53511580a388b38b4970bd"
+	},
+	"network": "devnet"
+}

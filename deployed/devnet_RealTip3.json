@@ -1,0 +1,9 @@
+{
+	"name": "TONTokenWallet",
+	"address": "0:91983b4977fa40085129695900d1ca2cbf4f47cc69bfed6ea12fb4f1ccbb3fb4",
+	"keyPair": {
+		"public": "1d0bafcaa5a39a39f7567bcd5ddaa556eaa12a4eecc87ea142bd0a991e9cf749",
+		"secret": "e682829f060325cdb06dedb59636f62f11234c0cbe53511580a388b38b4970bd"
+	},
+	"network": "devnet"
+}

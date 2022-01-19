@@ -1,0 +1,166 @@
+{
+	"ABI version": 2,
+	"header": ["pubkey", "time", "expire"],
+	"functions": [
+		{
+			"name": "constructor",
+			"inputs": [
+				{"name":"_newOwner","type":"address"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "upgradeContractCode",
+			"inputs": [
+				{"name":"code","type":"cell"},
+				{"name":"updateParams","type":"cell"},
+				{"name":"codeVersion","type":"uint32"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "getVersion",
+			"inputs": [
+				{"name":"_answer_id","type":"uint32"}
+			],
+			"outputs": [
+				{"name":"value0","type":"uint32"}
+			]
+		},
+		{
+			"name": "getDetails",
+			"inputs": [
+				{"name":"_answer_id","type":"uint32"}
+			],
+			"outputs": [
+				{"components":[{"name":"codeVersion","type":"uint32"},{"name":"ownerAddress","type":"address"}],"name":"value0","type":"tuple"}
+			]
+		},
+		{
+			"name": "externalUpdatePrice",
+			"inputs": [
+				{"name":"tokenRoot","type":"address"},
+				{"name":"tokens","type":"uint128"},
+				{"name":"usd","type":"uint128"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "internalUpdatePrice",
+			"inputs": [
+				{"name":"tokenRoot","type":"address"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "internalGetUpdatedPrice",
+			"inputs": [
+				{"components":[{"name":"lp_supply","type":"uint128"},{"name":"left_balance","type":"uint128"},{"name":"right_balance","type":"uint128"}],"name":"updatedPrice","type":"tuple"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "getTokenPrice",
+			"inputs": [
+				{"name":"_answer_id","type":"uint32"},
+				{"name":"tokenRoot","type":"address"},
+				{"name":"payload","type":"cell"}
+			],
+			"outputs": [
+				{"name":"value0","type":"address"},
+				{"name":"value1","type":"uint128"},
+				{"name":"value2","type":"uint128"},
+				{"name":"value3","type":"cell"}
+			]
+		},
+		{
+			"name": "getAllTokenPrices",
+			"inputs": [
+				{"name":"_answer_id","type":"uint32"},
+				{"name":"payload","type":"cell"}
+			],
+			"outputs": [
+				{"components":[{"name":"swapPair","type":"address"},{"name":"isLeft","type":"bool"},{"name":"tokens","type":"uint128"},{"name":"usd","type":"uint128"}],"name":"value0","type":"map(address,tuple)"},
+				{"name":"value1","type":"cell"}
+			]
+		},
+		{
+			"name": "addToken",
+			"inputs": [
+				{"name":"tokenRoot","type":"address"},
+				{"name":"swapPairAddress","type":"address"},
+				{"name":"isLeft","type":"bool"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "removeToken",
+			"inputs": [
+				{"name":"tokenRoot","type":"address"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "setUpgrader",
+			"inputs": [
+				{"name":"upgrader","type":"address"},
+				{"name":"allowed","type":"bool"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "setParamChanger",
+			"inputs": [
+				{"name":"paramChanger","type":"address"},
+				{"name":"allowed","type":"bool"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "changeOwner",
+			"inputs": [
+				{"name":"_newOwner","type":"address"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "getOwner",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"value0","type":"address"}
+			]
+		},
+		{
+			"name": "getUpgraders",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"value0","type":"map(address,bool)"}
+			]
+		},
+		{
+			"name": "getParamChangers",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"value0","type":"map(address,bool)"}
+			]
+		}
+	],
+	"data": [
+		{"key":1,"name":"nonce","type":"uint256"}
+	],
+	"events": [
+	]
+}

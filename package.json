@@ -1,0 +1,73 @@
+{
+    "name": "ton-lend",
+    "version": "0.1.0",
+    "description": "Package for operating TON-Lend smart contract system",
+    "main": "index.js",
+    "dependencies": {
+        "locklift": "^1.4.4",
+        "tondev": "^0.9.0"
+    },
+    "scripts": {
+        "test": "mocha",
+        "initial-setup": "npm install && npm install -g tondev && tondev sol set -c 0.47.0 -s 0.47.0",
+        "build-sc": "node scripts/utils/build-sc.js",
+        "full-setup": "npm-run-all deploy:* && npm-run-all setup:* && npm run setup:market && npm run run:oracle-add-token && npm run run:oracle-update-price && npm run run:market-add-market &&  npm run deploy:user-account &&  npm run run:market-update-cache && npm run run:user-account-enter-market && npm run run:wallet-controller-add-market",
+        "deploy": "npm-run-all deploy:*",
+        "deploy:wallet": "node scripts/contracts/wallet/scripts/deploy-multisig-wallet.js",
+        "deploy:market": "node scripts/contracts/marketAggregator/scripts/deploy-market.js",
+        "deploy:market-modules": "node scripts/contracts/marketModules/scripts/deploy-modules.js",
+        "deploy:oracle": "node scripts/contracts/oracle/scripts/deploy-oracle.js",
+        "deploy:user-account-manager": "node scripts/contracts/userAccount/scripts/deploy-user-account-manager.js",
+        "dep:user": "node scripts/contracts/userAccount/scripts/deploy-user-account.js",
+        "deploy:wallet-controller": "node scripts/contracts/walletController/scripts/deploy-wallet-controller.js",
+        "dep:test-swap-pair": "node scripts/contracts/oracle/scripts/deploy-test-swap-pair.js",
+        "update": "npm-run-all update:*",
+        "update:market": "node ./scripts/contracts/marketAggregator/scripts/update-market.js",
+        "update:modules": "node ./scripts/contracts/marketModules/scripts/update-modules.js",
+        "update:user": "npm run setup:user-account-manager-code && node ./scripts/contracts/userAccount/scripts/update-user-account.js",
+        "update:wallet-controller": "node ./scripts/contracts/walletController/scripts/update-wallet-controller.js",
+        "update:user-account-manager": "node ./scripts/contracts/userAccount/scripts/update-user-account-manager.js",
+        "get:market": "node scripts/contracts/marketAggregator/scripts/get-full-info.js",
+        "get:modules": "node scripts/contracts/marketModules/scripts/get-module-info.js",
+        "get:user-account-manager": "node scripts/contracts/userAccount/scripts/get-uam-info.js",
+        "get:user": "node scripts/contracts/userAccount/scripts/get-ua-info.js",
+        "get:wallet-controller": "node scripts/contracts/walletController/scripts/get-info.js",
+        "get:oracle": "node scripts/contracts/oracle/scripts/get-oracle-info.js",
+        "setup": "npm-run-all setup:*",
+        "set:test-swap-pair": "node ./scripts/contracts/oracle/scripts/set-test-price.js",
+        "setup:market": "node ./scripts/contracts/marketAggregator/scripts/setup-contract-addresses.js",
+        "setup:modules": "node ./scripts/contracts/marketModules/scripts/setup-modules.js",
+        "setup:user-account-manager-addresses": "node ./scripts/contracts/userAccount/scripts/setup-contract-addresses.js",
+        "setup:user-account-manager-code": "node ./scripts/contracts/userAccount/scripts/setup-upload-ua-code.js",
+        "setup:wallet-controller": "node ./scripts/contracts/walletController/scripts/setup-contract-addresses.js",
+        "run:oracle-add-token": "node ./scripts/contracts/oracle/scripts/oracle-add-token.js",
+        "run:oracle-update-price": "node ./scripts/contracts/oracle/scripts/run-internal-update-price.js",
+        "run:market-add-market": "node ./scripts/contracts/marketAggregator/scripts/add-new-market.js",
+        "run:market-update-price": "node ./scripts/contracts/marketAggregator/scripts/run-update-price.js",
+        "run:market-update-cache": "node ./scripts/contracts/marketAggregator/scripts/run-update-module-cache.js",
+        "run:user-enter-market": "node ./scripts/contracts/userAccount/scripts/run-ua-enter-market.js",
+        "run:wallet-controller-add-market": "node ./scripts/contracts/walletController/scripts/run-add-market.js",
+        "run:wallet-controller-remove-market": "node ./scripts/contracts/walletController/scripts/run-delete-market.js",
+        "run:user-supply-tokens": "node ./scripts/contracts/wallet/scripts/run-supply-tokens.js",
+        "run:user-update-health": "node ./scripts/contracts/userAccount/scripts/run-check-account-health.js",
+        "run:user-withdraw-tokens": "node ./scripts/contracts/userAccount/scripts/run-withdraw-tokens.js",
+        "run:user-borrow-tokens": "node ./scripts/contracts/userAccount/scripts/run-borrow-tokens.js",
+        "run:user-repay-tokens": "node ./scripts/contracts/wallet/scripts/run-repay-tokens.js",
+        "run:wallet-get-tokens": "node ./scripts/contracts/wallet/scripts/run-get-tokens.js"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/SVOIcom/TON-Lend.git"
+    },
+    "keywords": [
+        "Free-TON",
+        "TON-Lend",
+        "lending"
+    ],
+    "author": "Paul Mikhaylov",
+    "license": "Apache-2.0",
+    "bugs": {
+        "url": "https://github.com/SVOIcom/TON-Lend/issues"
+    },
+    "homepage": "https://github.com/SVOIcom/TON-Lend#readme"
+}

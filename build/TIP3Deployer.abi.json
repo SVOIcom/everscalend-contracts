@@ -1,0 +1,78 @@
+{
+	"ABI version": 2,
+	"header": ["pubkey", "time", "expire"],
+	"functions": [
+		{
+			"name": "constructor",
+			"inputs": [
+				{"name":"_owner","type":"address"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "upgradeContractCode",
+			"inputs": [
+				{"name":"code","type":"cell"},
+				{"name":"updateParams","type":"cell"},
+				{"name":"codeVersion","type":"uint32"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "deployTIP3",
+			"inputs": [
+				{"name":"_answer_id","type":"uint32"},
+				{"components":[{"name":"name","type":"bytes"},{"name":"symbol","type":"bytes"},{"name":"decimals","type":"uint8"},{"name":"root_public_key","type":"uint256"},{"name":"root_owner_address","type":"address"},{"name":"total_supply","type":"uint128"}],"name":"rootInfo","type":"tuple"},
+				{"name":"deployGrams","type":"uint128"},
+				{"name":"pubkeyToInsert","type":"uint256"},
+				{"name":"payloadToReturn","type":"cell"}
+			],
+			"outputs": [
+				{"name":"value0","type":"address"},
+				{"name":"value1","type":"cell"}
+			]
+		},
+		{
+			"name": "getFutureTIP3Address",
+			"inputs": [
+				{"name":"_answer_id","type":"uint32"},
+				{"components":[{"name":"name","type":"bytes"},{"name":"symbol","type":"bytes"},{"name":"decimals","type":"uint8"},{"name":"root_public_key","type":"uint256"},{"name":"root_owner_address","type":"address"},{"name":"total_supply","type":"uint128"}],"name":"rootInfo","type":"tuple"},
+				{"name":"pubkeyToInsert","type":"uint256"}
+			],
+			"outputs": [
+				{"name":"value0","type":"address"}
+			]
+		},
+		{
+			"name": "setTIP3RootContractCode",
+			"inputs": [
+				{"name":"_rootContractCode","type":"cell"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "setTIP3WalletContractCode",
+			"inputs": [
+				{"name":"_walletContractCode","type":"cell"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "getServiceInfo",
+			"inputs": [
+				{"name":"_answer_id","type":"uint32"}
+			],
+			"outputs": [
+				{"components":[{"name":"rootCode","type":"cell"},{"name":"walletCode","type":"cell"}],"name":"value0","type":"tuple"}
+			]
+		}
+	],
+	"data": [
+	],
+	"events": [
+	]
+}

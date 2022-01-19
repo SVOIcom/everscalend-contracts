@@ -1,0 +1,9 @@
+{
+	"name": "Oracle",
+	"address": "0:98263975d576dd72e22f1480d526751d5fa238904e859c6def37aa3c8ee411d5",
+	"keyPair": {
+		"public": "1d0bafcaa5a39a39f7567bcd5ddaa556eaa12a4eecc87ea142bd0a991e9cf749",
+		"secret": "e682829f060325cdb06dedb59636f62f11234c0cbe53511580a388b38b4970bd"
+	},
+	"network": "devnet"
+}

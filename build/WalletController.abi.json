@@ -1,0 +1,265 @@
+{
+	"ABI version": 2,
+	"header": ["pubkey", "time", "expire"],
+	"functions": [
+		{
+			"name": "constructor",
+			"inputs": [
+				{"name":"_newOwner","type":"address"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "upgradeContractCode",
+			"inputs": [
+				{"name":"code","type":"cell"},
+				{"name":"updateParams","type":"cell"},
+				{"name":"codeVersion","type":"uint32"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "setMarketAddress",
+			"inputs": [
+				{"name":"_market","type":"address"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "addMarket",
+			"inputs": [
+				{"name":"marketId","type":"uint32"},
+				{"name":"realTokenRoot","type":"address"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "removeMarket",
+			"inputs": [
+				{"name":"marketId","type":"uint32"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "transferTokensToWallet",
+			"inputs": [
+				{"name":"tonWallet","type":"address"},
+				{"name":"tokenRoot","type":"address"},
+				{"name":"userTip3Wallet","type":"address"},
+				{"name":"toPayout","type":"uint256"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "receiveTIP3WalletAddress",
+			"inputs": [
+				{"name":"_wallet","type":"address"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "setReceiveCallback",
+			"inputs": [
+				{"name":"_wallet","type":"address"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "tokensReceivedCallback",
+			"inputs": [
+				{"name":"token_wallet","type":"address"},
+				{"name":"token_root","type":"address"},
+				{"name":"amount","type":"uint128"},
+				{"name":"value3","type":"uint256"},
+				{"name":"sender_address","type":"address"},
+				{"name":"sender_wallet","type":"address"},
+				{"name":"value6","type":"address"},
+				{"name":"value7","type":"uint128"},
+				{"name":"payload","type":"cell"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "getRealTokenRoots",
+			"inputs": [
+				{"name":"_answer_id","type":"uint32"}
+			],
+			"outputs": [
+				{"name":"value0","type":"map(address,bool)"}
+			]
+		},
+		{
+			"name": "getWallets",
+			"inputs": [
+				{"name":"_answer_id","type":"uint32"}
+			],
+			"outputs": [
+				{"name":"value0","type":"map(address,address)"}
+			]
+		},
+		{
+			"name": "getMarketAddresses",
+			"inputs": [
+				{"name":"_answer_id","type":"uint32"},
+				{"name":"marketId","type":"uint32"}
+			],
+			"outputs": [
+				{"components":[{"name":"realToken","type":"address"},{"name":"realTokenWallet","type":"address"}],"name":"value0","type":"tuple"}
+			]
+		},
+		{
+			"name": "getAllMarkets",
+			"inputs": [
+				{"name":"_answer_id","type":"uint32"}
+			],
+			"outputs": [
+				{"components":[{"name":"realToken","type":"address"},{"name":"realTokenWallet","type":"address"}],"name":"value0","type":"map(uint32,tuple)"}
+			]
+		},
+		{
+			"name": "createSupplyPayload",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"value0","type":"cell"}
+			]
+		},
+		{
+			"name": "createRepayPayload",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"value0","type":"cell"}
+			]
+		},
+		{
+			"name": "createLiquidationPayload",
+			"inputs": [
+				{"name":"targetUser","type":"address"},
+				{"name":"marketId","type":"uint32"}
+			],
+			"outputs": [
+				{"name":"value0","type":"cell"}
+			]
+		},
+		{
+			"name": "setUpgrader",
+			"inputs": [
+				{"name":"upgrader","type":"address"},
+				{"name":"allowed","type":"bool"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "setParamChanger",
+			"inputs": [
+				{"name":"paramChanger","type":"address"},
+				{"name":"allowed","type":"bool"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "changeOwner",
+			"inputs": [
+				{"name":"_newOwner","type":"address"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "getOwner",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"value0","type":"address"}
+			]
+		},
+		{
+			"name": "getUpgraders",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"value0","type":"map(address,bool)"}
+			]
+		},
+		{
+			"name": "getParamChangers",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"value0","type":"map(address,bool)"}
+			]
+		},
+		{
+			"name": "contractCodeVersion",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"contractCodeVersion","type":"uint32"}
+			]
+		},
+		{
+			"name": "marketAddress",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"marketAddress","type":"address"}
+			]
+		},
+		{
+			"name": "wallets",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"wallets","type":"map(address,address)"}
+			]
+		},
+		{
+			"name": "realTokenRoots",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"realTokenRoots","type":"map(address,bool)"}
+			]
+		},
+		{
+			"name": "vTokenRoots",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"vTokenRoots","type":"map(address,bool)"}
+			]
+		},
+		{
+			"name": "tokensToMarkets",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"tokensToMarkets","type":"map(address,uint32)"}
+			]
+		},
+		{
+			"name": "marketTIP3Info",
+			"inputs": [
+			],
+			"outputs": [
+				{"components":[{"name":"realToken","type":"address"},{"name":"realTokenWallet","type":"address"}],"name":"marketTIP3Info","type":"map(uint32,tuple)"}
+			]
+		}
+	],
+	"data": [
+	],
+	"events": [
+	]
+}

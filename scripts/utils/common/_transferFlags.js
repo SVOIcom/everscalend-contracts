@@ -1,0 +1,12 @@
+const operationFlags = {
+    FEE_FROM_MSG_VALUE: 0,
+    FEE_FROM_CONTRACT_BALANCE: 1,
+    IGNORE_ERRORS: 2,
+    DESTROY_CONTRACT: 32,
+    GET_REMAINING_TONS_FROM_OPERATION: 64,
+    GET_ALL_TONS_FROM_CONTRACT_BALANCE: 128
+}
+
+module.exports = {
+    operationFlags
+}

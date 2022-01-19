@@ -1,0 +1,310 @@
+{
+	"ABI version": 2,
+	"header": ["pubkey", "time", "expire"],
+	"functions": [
+		{
+			"name": "constructor",
+			"inputs": [
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "getKnownMarkets",
+			"inputs": [
+				{"name":"_answer_id","type":"uint32"}
+			],
+			"outputs": [
+				{"name":"value0","type":"map(uint32,bool)"}
+			]
+		},
+		{
+			"name": "getAllMarketsInfo",
+			"inputs": [
+				{"name":"_answer_id","type":"uint32"}
+			],
+			"outputs": [
+				{"components":[{"name":"exists","type":"bool"},{"name":"_marketId","type":"uint32"},{"name":"suppliedTokens","type":"uint256"},{"components":[{"name":"nom","type":"uint256"},{"name":"denom","type":"uint256"}],"name":"accountHealth","type":"tuple"},{"components":[{"name":"tokensBorrowed","type":"uint256"},{"components":[{"name":"nom","type":"uint256"},{"name":"denom","type":"uint256"}],"name":"index","type":"tuple"}],"name":"borrowInfo","type":"tuple"}],"name":"value0","type":"map(uint32,tuple)"}
+			]
+		},
+		{
+			"name": "getMarketInfo",
+			"inputs": [
+				{"name":"_answer_id","type":"uint32"},
+				{"name":"marketId","type":"uint32"}
+			],
+			"outputs": [
+				{"components":[{"name":"exists","type":"bool"},{"name":"_marketId","type":"uint32"},{"name":"suppliedTokens","type":"uint256"},{"components":[{"name":"nom","type":"uint256"},{"name":"denom","type":"uint256"}],"name":"accountHealth","type":"tuple"},{"components":[{"name":"tokensBorrowed","type":"uint256"},{"components":[{"name":"nom","type":"uint256"},{"name":"denom","type":"uint256"}],"name":"index","type":"tuple"}],"name":"borrowInfo","type":"tuple"}],"name":"value0","type":"tuple"}
+			]
+		},
+		{
+			"name": "upgradeContractCode",
+			"inputs": [
+				{"name":"code","type":"cell"},
+				{"name":"updateParams","type":"cell"},
+				{"name":"codeVersion","type":"uint32"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "getOwner",
+			"inputs": [
+				{"name":"_answer_id","type":"uint32"}
+			],
+			"outputs": [
+				{"name":"value0","type":"address"}
+			]
+		},
+		{
+			"name": "writeSupplyInfo",
+			"inputs": [
+				{"name":"marketId","type":"uint32"},
+				{"name":"tokensToSupply","type":"uint256"},
+				{"components":[{"name":"nom","type":"uint256"},{"name":"denom","type":"uint256"}],"name":"index","type":"tuple"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "withdraw",
+			"inputs": [
+				{"name":"userTip3Wallet","type":"address"},
+				{"name":"marketId","type":"uint32"},
+				{"name":"tokensToWithdraw","type":"uint256"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "requestWithdrawInfo",
+			"inputs": [
+				{"name":"userTip3Wallet","type":"address"},
+				{"name":"marketId","type":"uint32"},
+				{"name":"tokensToWithdraw","type":"uint256"},
+				{"components":[{"name":"nom","type":"uint256"},{"name":"denom","type":"uint256"}],"name":"updatedIndexes","type":"map(uint32,tuple)"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "writeWithdrawInfo",
+			"inputs": [
+				{"name":"userTip3Wallet","type":"address"},
+				{"name":"marketId","type":"uint32"},
+				{"name":"tokensToWithdraw","type":"uint256"},
+				{"name":"tokensToSend","type":"uint256"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "borrow",
+			"inputs": [
+				{"name":"marketId","type":"uint32"},
+				{"name":"amountToBorrow","type":"uint256"},
+				{"name":"userTip3Wallet","type":"address"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "borrowUpdateIndexes",
+			"inputs": [
+				{"name":"marketId","type":"uint32"},
+				{"components":[{"name":"nom","type":"uint256"},{"name":"denom","type":"uint256"}],"name":"updatedIndexes","type":"map(uint32,tuple)"},
+				{"name":"userTip3Wallet","type":"address"},
+				{"name":"toBorrow","type":"uint256"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "writeBorrowInformation",
+			"inputs": [
+				{"name":"marketId","type":"uint32"},
+				{"name":"toBorrow","type":"uint256"},
+				{"name":"userTip3Wallet","type":"address"},
+				{"components":[{"name":"nom","type":"uint256"},{"name":"denom","type":"uint256"}],"name":"marketIndex","type":"tuple"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "sendRepayInfo",
+			"inputs": [
+				{"name":"userTip3Wallet","type":"address"},
+				{"name":"marketId","type":"uint32"},
+				{"name":"tokensForRepay","type":"uint256"},
+				{"components":[{"name":"nom","type":"uint256"},{"name":"denom","type":"uint256"}],"name":"updatedIndexes","type":"map(uint32,tuple)"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "writeRepayInformation",
+			"inputs": [
+				{"name":"userTip3Wallet","type":"address"},
+				{"name":"marketId","type":"uint32"},
+				{"name":"tokensToReturn","type":"uint256"},
+				{"components":[{"name":"tokensBorrowed","type":"uint256"},{"components":[{"name":"nom","type":"uint256"},{"name":"denom","type":"uint256"}],"name":"index","type":"tuple"}],"name":"bi","type":"tuple"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "checkUserAccountHealth",
+			"inputs": [
+				{"name":"gasTo","type":"address"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "updateUserAccountHealth",
+			"inputs": [
+				{"name":"gasTo","type":"address"},
+				{"components":[{"name":"nom","type":"uint256"},{"name":"denom","type":"uint256"}],"name":"_accountHealth","type":"tuple"},
+				{"components":[{"name":"nom","type":"uint256"},{"name":"denom","type":"uint256"}],"name":"updatedIndexes","type":"map(uint32,tuple)"},
+				{"name":"dataToTransfer","type":"cell"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "removeMarket",
+			"inputs": [
+				{"name":"marketId","type":"uint32"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "requestLiquidationInformation",
+			"inputs": [
+				{"name":"tonWallet","type":"address"},
+				{"name":"tip3UserWallet","type":"address"},
+				{"name":"marketId","type":"uint32"},
+				{"name":"marketToLiquidate","type":"uint32"},
+				{"name":"tokensProvided","type":"uint256"},
+				{"components":[{"name":"nom","type":"uint256"},{"name":"denom","type":"uint256"}],"name":"updatedIndexes","type":"map(uint32,tuple)"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "liquidateVTokens",
+			"inputs": [
+				{"name":"tonWallet","type":"address"},
+				{"name":"tip3UserWallet","type":"address"},
+				{"name":"marketId","type":"uint32"},
+				{"name":"marketToLiquidate","type":"uint32"},
+				{"name":"tokensToSeize","type":"uint256"},
+				{"name":"tokensToReturn","type":"uint256"},
+				{"name":"tokensFromReserve","type":"uint256"},
+				{"components":[{"name":"tokensBorrowed","type":"uint256"},{"components":[{"name":"nom","type":"uint256"},{"name":"denom","type":"uint256"}],"name":"index","type":"tuple"}],"name":"borrowInfo","type":"tuple"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "grantVTokens",
+			"inputs": [
+				{"name":"tip3UserWallet","type":"address"},
+				{"name":"marketId","type":"uint32"},
+				{"name":"marketToLiquidate","type":"uint32"},
+				{"name":"tokensToSeize","type":"uint256"},
+				{"name":"tokensToReturn","type":"uint256"},
+				{"name":"tokensFromReserve","type":"uint256"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "abortLiquidation",
+			"inputs": [
+				{"name":"tonWallet","type":"address"},
+				{"name":"tip3UserWallet","type":"address"},
+				{"name":"marketId","type":"uint32"},
+				{"name":"tokensProvided","type":"uint256"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "disableBorrowLock",
+			"inputs": [
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "enterMarket",
+			"inputs": [
+				{"name":"marketId","type":"uint32"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "withdrawExtraTons",
+			"inputs": [
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "borrowLock",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"borrowLock","type":"bool"}
+			]
+		},
+		{
+			"name": "liquidationLock",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"liquidationLock","type":"bool"}
+			]
+		},
+		{
+			"name": "owner",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"owner","type":"address"}
+			]
+		},
+		{
+			"name": "userAccountManager",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"userAccountManager","type":"address"}
+			]
+		},
+		{
+			"name": "contractCodeVersion",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"contractCodeVersion","type":"uint32"}
+			]
+		},
+		{
+			"name": "accountHealth",
+			"inputs": [
+			],
+			"outputs": [
+				{"components":[{"name":"nom","type":"uint256"},{"name":"denom","type":"uint256"}],"name":"accountHealth","type":"tuple"}
+			]
+		}
+	],
+	"data": [
+		{"key":1,"name":"owner","type":"address"}
+	],
+	"events": [
+	]
+}

@@ -1,0 +1,365 @@
+{
+	"ABI version": 2,
+	"header": ["pubkey", "time", "expire"],
+	"functions": [
+		{
+			"name": "constructor",
+			"inputs": [
+				{"name":"_newOwner","type":"address"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "upgradeContractCode",
+			"inputs": [
+				{"name":"code","type":"cell"},
+				{"name":"updateParams","type":"cell"},
+				{"name":"codeVersion","type":"uint32"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "receiveCacheDelta",
+			"inputs": [
+				{"components":[{"components":[{"name":"positive","type":"bool"},{"name":"delta","type":"uint256"}],"name":"realTokenBalance","type":"tuple"},{"components":[{"name":"positive","type":"bool"},{"name":"delta","type":"uint256"}],"name":"vTokenBalance","type":"tuple"},{"components":[{"name":"positive","type":"bool"},{"name":"delta","type":"uint256"}],"name":"totalBorrowed","type":"tuple"},{"components":[{"name":"positive","type":"bool"},{"name":"delta","type":"uint256"}],"name":"totalReserve","type":"tuple"}],"name":"marketsDelta","type":"map(uint32,tuple)"},
+				{"name":"args","type":"cell"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "updateModulesCache",
+			"inputs": [
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "getServiceContractAddresses",
+			"inputs": [
+				{"name":"_answer_id","type":"uint32"}
+			],
+			"outputs": [
+				{"name":"_userAccountManager","type":"address"},
+				{"name":"_tip3WalletController","type":"address"},
+				{"name":"_oracle","type":"address"}
+			]
+		},
+		{
+			"name": "getTokenPrices",
+			"inputs": [
+				{"name":"_answer_id","type":"uint32"}
+			],
+			"outputs": [
+				{"components":[{"name":"nom","type":"uint256"},{"name":"denom","type":"uint256"}],"name":"value0","type":"map(address,tuple)"}
+			]
+		},
+		{
+			"name": "getMarketInformation",
+			"inputs": [
+				{"name":"_answer_id","type":"uint32"},
+				{"name":"marketId","type":"uint32"}
+			],
+			"outputs": [
+				{"components":[{"name":"token","type":"address"},{"name":"realTokenBalance","type":"uint256"},{"name":"vTokenBalance","type":"uint256"},{"name":"totalBorrowed","type":"uint256"},{"name":"totalReserve","type":"uint256"},{"components":[{"name":"nom","type":"uint256"},{"name":"denom","type":"uint256"}],"name":"index","type":"tuple"},{"components":[{"name":"nom","type":"uint256"},{"name":"denom","type":"uint256"}],"name":"baseRate","type":"tuple"},{"components":[{"name":"nom","type":"uint256"},{"name":"denom","type":"uint256"}],"name":"utilizationMultiplier","type":"tuple"},{"components":[{"name":"nom","type":"uint256"},{"name":"denom","type":"uint256"}],"name":"reserveFactor","type":"tuple"},{"components":[{"name":"nom","type":"uint256"},{"name":"denom","type":"uint256"}],"name":"exchangeRate","type":"tuple"},{"components":[{"name":"nom","type":"uint256"},{"name":"denom","type":"uint256"}],"name":"collateralFactor","type":"tuple"},{"components":[{"name":"nom","type":"uint256"},{"name":"denom","type":"uint256"}],"name":"liquidationMultiplier","type":"tuple"},{"name":"lastUpdateTime","type":"uint256"}],"name":"value0","type":"tuple"}
+			]
+		},
+		{
+			"name": "getAllMarkets",
+			"inputs": [
+				{"name":"_answer_id","type":"uint32"}
+			],
+			"outputs": [
+				{"components":[{"name":"token","type":"address"},{"name":"realTokenBalance","type":"uint256"},{"name":"vTokenBalance","type":"uint256"},{"name":"totalBorrowed","type":"uint256"},{"name":"totalReserve","type":"uint256"},{"components":[{"name":"nom","type":"uint256"},{"name":"denom","type":"uint256"}],"name":"index","type":"tuple"},{"components":[{"name":"nom","type":"uint256"},{"name":"denom","type":"uint256"}],"name":"baseRate","type":"tuple"},{"components":[{"name":"nom","type":"uint256"},{"name":"denom","type":"uint256"}],"name":"utilizationMultiplier","type":"tuple"},{"components":[{"name":"nom","type":"uint256"},{"name":"denom","type":"uint256"}],"name":"reserveFactor","type":"tuple"},{"components":[{"name":"nom","type":"uint256"},{"name":"denom","type":"uint256"}],"name":"exchangeRate","type":"tuple"},{"components":[{"name":"nom","type":"uint256"},{"name":"denom","type":"uint256"}],"name":"collateralFactor","type":"tuple"},{"components":[{"name":"nom","type":"uint256"},{"name":"denom","type":"uint256"}],"name":"liquidationMultiplier","type":"tuple"},{"name":"lastUpdateTime","type":"uint256"}],"name":"value0","type":"map(uint32,tuple)"}
+			]
+		},
+		{
+			"name": "withdrawExtraTons",
+			"inputs": [
+				{"name":"amount","type":"uint128"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "getAllModules",
+			"inputs": [
+				{"name":"_answer_id","type":"uint32"}
+			],
+			"outputs": [
+				{"name":"value0","type":"map(uint8,address)"}
+			]
+		},
+		{
+			"name": "createNewMarket",
+			"inputs": [
+				{"name":"marketId","type":"uint32"},
+				{"name":"realToken","type":"address"},
+				{"components":[{"name":"nom","type":"uint256"},{"name":"denom","type":"uint256"}],"name":"_baseRate","type":"tuple"},
+				{"components":[{"name":"nom","type":"uint256"},{"name":"denom","type":"uint256"}],"name":"_utilizationMultiplier","type":"tuple"},
+				{"components":[{"name":"nom","type":"uint256"},{"name":"denom","type":"uint256"}],"name":"_reserveFactor","type":"tuple"},
+				{"components":[{"name":"nom","type":"uint256"},{"name":"denom","type":"uint256"}],"name":"_exchangeRate","type":"tuple"},
+				{"components":[{"name":"nom","type":"uint256"},{"name":"denom","type":"uint256"}],"name":"_collateralFactor","type":"tuple"},
+				{"components":[{"name":"nom","type":"uint256"},{"name":"denom","type":"uint256"}],"name":"_liquidationMultiplier","type":"tuple"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "updateMarketParameters",
+			"inputs": [
+				{"name":"marketId","type":"uint32"},
+				{"components":[{"name":"nom","type":"uint256"},{"name":"denom","type":"uint256"}],"name":"_baseRate","type":"tuple"},
+				{"components":[{"name":"nom","type":"uint256"},{"name":"denom","type":"uint256"}],"name":"_utilizationMultiplier","type":"tuple"},
+				{"components":[{"name":"nom","type":"uint256"},{"name":"denom","type":"uint256"}],"name":"_reserveFactor","type":"tuple"},
+				{"components":[{"name":"nom","type":"uint256"},{"name":"denom","type":"uint256"}],"name":"_exchangeRate","type":"tuple"},
+				{"components":[{"name":"nom","type":"uint256"},{"name":"denom","type":"uint256"}],"name":"_collateralFactor","type":"tuple"},
+				{"components":[{"name":"nom","type":"uint256"},{"name":"denom","type":"uint256"}],"name":"_liquidationMultiplier","type":"tuple"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "removeMarket",
+			"inputs": [
+				{"name":"marketId","type":"uint32"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "addModule",
+			"inputs": [
+				{"name":"operationId","type":"uint8"},
+				{"name":"module","type":"address"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "removeModule",
+			"inputs": [
+				{"name":"operationId","type":"uint8"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "performOperationWalletController",
+			"inputs": [
+				{"name":"operationId","type":"uint8"},
+				{"name":"tokenRoot","type":"address"},
+				{"name":"args","type":"cell"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "performOperationUserAccountManager",
+			"inputs": [
+				{"name":"operationId","type":"uint8"},
+				{"name":"marketId","type":"uint32"},
+				{"name":"args","type":"cell"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "calculateUserAccountHealth",
+			"inputs": [
+				{"name":"tonWallet","type":"address"},
+				{"name":"gasTo","type":"address"},
+				{"name":"supplyInfo","type":"map(uint32,uint256)"},
+				{"components":[{"name":"tokensBorrowed","type":"uint256"},{"components":[{"name":"nom","type":"uint256"},{"name":"denom","type":"uint256"}],"name":"index","type":"tuple"}],"name":"borrowInfo","type":"map(uint32,tuple)"},
+				{"name":"dataToTransfer","type":"cell"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "requestTokenPayout",
+			"inputs": [
+				{"name":"tonWallet","type":"address"},
+				{"name":"userTip3Wallet","type":"address"},
+				{"name":"marketId","type":"uint32"},
+				{"name":"toPayout","type":"uint256"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "receiveUpdatedPrice",
+			"inputs": [
+				{"name":"tokenRoot","type":"address"},
+				{"name":"nom","type":"uint128"},
+				{"name":"denom","type":"uint128"},
+				{"name":"value3","type":"cell"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "receiveAllUpdatedPrices",
+			"inputs": [
+				{"components":[{"name":"swapPair","type":"address"},{"name":"isLeft","type":"bool"},{"name":"tokens","type":"uint128"},{"name":"usd","type":"uint128"}],"name":"updatedPrices","type":"map(address,tuple)"},
+				{"name":"payload","type":"cell"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "forceUpdateAllPrices",
+			"inputs": [
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "setUserAccountManager",
+			"inputs": [
+				{"name":"_userAccountManager","type":"address"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "setWalletController",
+			"inputs": [
+				{"name":"_tip3WalletController","type":"address"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "setOracleAddress",
+			"inputs": [
+				{"name":"_oracle","type":"address"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "setUpgrader",
+			"inputs": [
+				{"name":"upgrader","type":"address"},
+				{"name":"allowed","type":"bool"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "setParamChanger",
+			"inputs": [
+				{"name":"paramChanger","type":"address"},
+				{"name":"allowed","type":"bool"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "changeOwner",
+			"inputs": [
+				{"name":"_newOwner","type":"address"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "getOwner",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"value0","type":"address"}
+			]
+		},
+		{
+			"name": "getUpgraders",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"value0","type":"map(address,bool)"}
+			]
+		},
+		{
+			"name": "getParamChangers",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"value0","type":"map(address,bool)"}
+			]
+		},
+		{
+			"name": "contractCodeVersion",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"contractCodeVersion","type":"uint32"}
+			]
+		},
+		{
+			"name": "userAccountManager",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"userAccountManager","type":"address"}
+			]
+		},
+		{
+			"name": "walletController",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"walletController","type":"address"}
+			]
+		},
+		{
+			"name": "oracle",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"oracle","type":"address"}
+			]
+		},
+		{
+			"name": "modules",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"modules","type":"map(uint8,address)"}
+			]
+		}
+	],
+	"data": [
+	],
+	"events": [
+		{
+			"name": "MarketCreated",
+			"inputs": [
+				{"name":"marketId","type":"uint32"},
+				{"components":[{"name":"token","type":"address"},{"name":"realTokenBalance","type":"uint256"},{"name":"vTokenBalance","type":"uint256"},{"name":"totalBorrowed","type":"uint256"},{"name":"totalReserve","type":"uint256"},{"components":[{"name":"nom","type":"uint256"},{"name":"denom","type":"uint256"}],"name":"index","type":"tuple"},{"components":[{"name":"nom","type":"uint256"},{"name":"denom","type":"uint256"}],"name":"baseRate","type":"tuple"},{"components":[{"name":"nom","type":"uint256"},{"name":"denom","type":"uint256"}],"name":"utilizationMultiplier","type":"tuple"},{"components":[{"name":"nom","type":"uint256"},{"name":"denom","type":"uint256"}],"name":"reserveFactor","type":"tuple"},{"components":[{"name":"nom","type":"uint256"},{"name":"denom","type":"uint256"}],"name":"exchangeRate","type":"tuple"},{"components":[{"name":"nom","type":"uint256"},{"name":"denom","type":"uint256"}],"name":"collateralFactor","type":"tuple"},{"components":[{"name":"nom","type":"uint256"},{"name":"denom","type":"uint256"}],"name":"liquidationMultiplier","type":"tuple"},{"name":"lastUpdateTime","type":"uint256"}],"name":"marketState","type":"tuple"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "MarketDeleted",
+			"inputs": [
+				{"name":"marketId","type":"uint32"},
+				{"components":[{"name":"token","type":"address"},{"name":"realTokenBalance","type":"uint256"},{"name":"vTokenBalance","type":"uint256"},{"name":"totalBorrowed","type":"uint256"},{"name":"totalReserve","type":"uint256"},{"components":[{"name":"nom","type":"uint256"},{"name":"denom","type":"uint256"}],"name":"index","type":"tuple"},{"components":[{"name":"nom","type":"uint256"},{"name":"denom","type":"uint256"}],"name":"baseRate","type":"tuple"},{"components":[{"name":"nom","type":"uint256"},{"name":"denom","type":"uint256"}],"name":"utilizationMultiplier","type":"tuple"},{"components":[{"name":"nom","type":"uint256"},{"name":"denom","type":"uint256"}],"name":"reserveFactor","type":"tuple"},{"components":[{"name":"nom","type":"uint256"},{"name":"denom","type":"uint256"}],"name":"exchangeRate","type":"tuple"},{"components":[{"name":"nom","type":"uint256"},{"name":"denom","type":"uint256"}],"name":"collateralFactor","type":"tuple"},{"components":[{"name":"nom","type":"uint256"},{"name":"denom","type":"uint256"}],"name":"liquidationMultiplier","type":"tuple"},{"name":"lastUpdateTime","type":"uint256"}],"name":"marketState","type":"tuple"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "LiquidationPossible",
+			"inputs": [
+				{"name":"tonWallet","type":"address"},
+				{"components":[{"name":"nom","type":"uint256"},{"name":"denom","type":"uint256"}],"name":"accountHealth","type":"tuple"}
+			],
+			"outputs": [
+			]
+		}
+	]
+}

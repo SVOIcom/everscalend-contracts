@@ -1,0 +1,37 @@
+{
+	"ABI version": 2,
+	"header": ["time"],
+	"functions": [
+		{
+			"name": "constructor",
+			"inputs": [
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "getBalances",
+			"inputs": [
+				{"name":"_answer_id","type":"uint32"}
+			],
+			"outputs": [
+				{"components":[{"name":"lp_supply","type":"uint128"},{"name":"left_balance","type":"uint128"},{"name":"right_balance","type":"uint128"}],"name":"value0","type":"tuple"}
+			]
+		},
+		{
+			"name": "setBalances",
+			"inputs": [
+				{"name":"left","type":"uint128"},
+				{"name":"right","type":"uint128"},
+				{"name":"minted","type":"uint128"}
+			],
+			"outputs": [
+			]
+		}
+	],
+	"data": [
+		{"key":1,"name":"nonce","type":"uint256"}
+	],
+	"events": [
+	]
+}

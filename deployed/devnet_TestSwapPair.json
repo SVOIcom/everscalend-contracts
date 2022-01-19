@@ -1,0 +1,9 @@
+{
+	"name": "TestSwapPair",
+	"address": "0:3865e3c4ff91cfca9adc3e15ff14de53b275c7b4ec658252a0e19de4a398dce2",
+	"keyPair": {
+		"public": "1d0bafcaa5a39a39f7567bcd5ddaa556eaa12a4eecc87ea142bd0a991e9cf749",
+		"secret": "e682829f060325cdb06dedb59636f62f11234c0cbe53511580a388b38b4970bd"
+	},
+	"network": "devnet"
+}

@@ -4,22 +4,16 @@ import './interfaces/IModule.sol';
 
 import '../utils/libraries/MsgFlag.sol';
 
-contract WithdrawModule is IRoles, IModule, IContractStateCache, IContractAddressSG, IWithdrawModule, IUpgradableContract {
+contract WithdrawModule is ACModule, IWithdrawModule, IUpgradableContract {
     using UFO for uint256;
     using FPO for fraction;
-
-    address marketAddress;
-    address userAccountManager;
-    uint32 public contractCodeVersion;
-
-    mapping (uint32 => MarketInfo) marketInfo;
-    mapping (address => fraction) tokenPrices;
 
     event TokenWithdraw(uint32 marketId, MarketDelta marketDelta, address tonWallet, uint256 vTokensWithdrawn, uint256 realTokensWithdrawn);
 
     constructor(address _newOwner) public {
         tvm.accept();
         _owner = _newOwner;
+        actionId = OperationCodes.WITHDRAW_TOKENS;
     }
 
     function upgradeContractCode(TvmCell code, TvmCell updateParams, uint32 codeVersion) external override canUpgrade {
@@ -48,6 +42,7 @@ contract WithdrawModule is IRoles, IModule, IContractStateCache, IContractAddres
     ) private {
         tvm.accept();
         tvm.resetStorage();
+        actionId = OperationCodes.WITHDRAW_TOKENS;
         _owner = owner;
         marketAddress = _marketAddress;
         userAccountManager = _userAccountManager;
@@ -56,50 +51,24 @@ contract WithdrawModule is IRoles, IModule, IContractStateCache, IContractAddres
         contractCodeVersion = _codeVersion;
     }
 
-    function sendActionId() external override view responsible returns(uint8) {
-        return {flag: MsgFlag.REMAINING_GAS} OperationCodes.WITHDRAW_TOKENS;
-    }
+    function unlock(address, TvmCell) external override onlyOwner {}
 
-    function getModuleState() external override view returns(mapping(uint32 => MarketInfo), mapping(address => fraction)) {
-        return(marketInfo, tokenPrices);
-    }
-
-    function setMarketAddress(address _marketAddress) external override canChangeParams {
-        tvm.rawReserve(msg.value, 2);
-        marketAddress = _marketAddress;
-        address(_owner).transfer({value: 0, flag: MsgFlag.REMAINING_GAS});
-    }
-
-    function setUserAccountManager(address _userAccountManager) external override canChangeParams {
-        tvm.rawReserve(msg.value, 2);
-        userAccountManager = _userAccountManager;
-        address(_owner).transfer({value: 0, flag: MsgFlag.REMAINING_GAS});
-    }
-
-    function getContractAddresses() external override view responsible returns(address _owner, address _marketAddress, address _userAccountManager) {
-        return {flag: MsgFlag.REMAINING_GAS} (_owner, marketAddress, userAccountManager);
-    }
-
-    function updateCache(address tonWallet, mapping (uint32 => MarketInfo) _marketInfo, mapping (address => fraction) _tokenPrices) external override onlyMarket {
-        marketInfo = _marketInfo;
-        tokenPrices = _tokenPrices;
-        tonWallet.transfer({value: 0, flag: MsgFlag.REMAINING_GAS});
-    }
-
+    // Locking module in order to prevent attacks or mistakes that causes market to raise underflow error
     function performAction(uint32 marketId, TvmCell args, mapping (uint32 => MarketInfo) _marketInfo, mapping (address => fraction) _tokenPrices) external override onlyMarket {
         TvmSlice ts = args.toSlice();
         marketInfo = _marketInfo;
         tokenPrices = _tokenPrices;
         (address tonWallet, address userTip3Wallet, uint256 tokensToWithdraw) = ts.decode(address, address, uint256);
-        mapping(uint32 => fraction) updatedIndexes = _createUpdatedIndexes();
-        IUAMUserAccount(userAccountManager).requestWithdrawInfo{
-            flag: MsgFlag.REMAINING_GAS
-        }(tonWallet, userTip3Wallet, tokensToWithdraw, marketId, updatedIndexes);
-    }
-
-    function _createUpdatedIndexes() internal view returns(mapping(uint32 => fraction) updatedIndexes) {
-        for ((uint32 marketId, MarketInfo mi): marketInfo) {
-            updatedIndexes[marketId] = mi.index;
+        if (!_isLocked()) {
+            _generalLock(true);
+            mapping(uint32 => fraction) updatedIndexes = _createUpdatedIndexes();
+            IUAMUserAccount(userAccountManager).requestWithdrawInfo{
+                flag: MsgFlag.REMAINING_GAS
+            }(tonWallet, userTip3Wallet, tokensToWithdraw, marketId, updatedIndexes);
+        } else {
+            IUAMUserAccount(userAccountManager).requestUserAccountHealthCalculation{
+                flag: MsgFlag.REMAINING_GAS
+            }(tonWallet);
         }
     }
 
@@ -135,16 +104,22 @@ contract WithdrawModule is IRoles, IModule, IContractStateCache, IContractAddres
             (accountHealth.nom > accountHealth.denom) &&
             (supplyInfo[marketId] >= tokensToWithdraw)
         ) {
+            uint256 tokensToSend = fTokensToSend.toNum();
             if (
                 accountHealth.nom - accountHealth.denom >= fTokensToSendUSD.toNum() &&
-                fTokensToSend.toNum() <= mi.realTokenBalance - mi.totalReserve
+                tokensToSend <= mi.realTokenBalance
             ) {
-                uint256 tokensToSend = fTokensToSend.toNum();
-
-                marketDelta.realTokenBalance.delta = tokensToSend;
-                marketDelta.realTokenBalance.positive = false;
                 marketDelta.vTokenBalance.delta = tokensToWithdraw;
                 marketDelta.vTokenBalance.positive = false;
+                if (tokensToSend < mi.totalCash) {
+                    marketDelta.realTokenBalance.delta = tokensToSend;
+                    marketDelta.realTokenBalance.positive = false;
+                } else {
+                    marketDelta.realTokenBalance.delta = tokensToSend;
+                    marketDelta.realTokenBalance.positive = false;
+                    marketDelta.totalReserve.delta = tokensToSend - mi.totalCash;
+                    marketDelta.totalReserve.positive = false;
+                }
 
                 marketsDelta[marketId] = marketDelta;
 
@@ -163,11 +138,13 @@ contract WithdrawModule is IRoles, IModule, IContractStateCache, IContractAddres
                     flag: MsgFlag.REMAINING_GAS
                 }(marketsDelta, tb.toCell());
             } else {
+                _generalLock(false);
                 IUAMUserAccount(userAccountManager).requestUserAccountHealthCalculation{
                     flag: MsgFlag.REMAINING_GAS
                 }(tonWallet);
             }
         } else {
+            _generalLock(false);
             IUAMUserAccount(userAccountManager).requestUserAccountHealthCalculation{
                 flag: MsgFlag.REMAINING_GAS
             }(tonWallet);
@@ -175,9 +152,7 @@ contract WithdrawModule is IRoles, IModule, IContractStateCache, IContractAddres
     }
 
     function resumeOperation(TvmCell args, mapping(uint32 => MarketInfo) _marketInfo, mapping (address => fraction) _tokenPrices) external override onlyMarket {
-        tvm.rawReserve(msg.value, 2);
-        marketInfo = _marketInfo;
-        tokenPrices = _tokenPrices;
+        _generalLock(false);
         TvmSlice ts = args.toSlice();
         (uint32 marketId, address tonWallet, address userTip3Wallet) = ts.decode(uint32, address, address);
         TvmSlice values = ts.loadRefAsSlice();
@@ -185,16 +160,5 @@ contract WithdrawModule is IRoles, IModule, IContractStateCache, IContractAddres
         IUAMUserAccount(userAccountManager).writeWithdrawInfo{
             flag: MsgFlag.REMAINING_GAS
         }(tonWallet, userTip3Wallet, marketId, tokensToWithdraw, tokensToSend);
-    }
-
-    modifier onlyMarket() {
-        require(msg.sender == marketAddress);
-        tvm.rawReserve(msg.value, 2);
-        _;
-    }
-
-    modifier onlyUserAccountManager() {
-        require(msg.sender == userAccountManager);
-        _;
     }
 }

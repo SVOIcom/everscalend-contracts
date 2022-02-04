@@ -1,3 +1,6 @@
+// Yeah, wallet controller was so great we filmed WalletController 2
+// TODO: wait until new standart is published
+
 pragma ton-solidity >= 0.43.0;
 pragma AbiHeader pubkey;
 pragma AbiHeader expire;

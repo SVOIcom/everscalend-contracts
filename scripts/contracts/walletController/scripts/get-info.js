@@ -13,6 +13,10 @@ async function main() {
     console.log(`All markets: ${pp(await contracts.walletController.getAllMarkets())}`);
 
     console.log(`Code version: ${await contracts.walletController.contractCodeVersion()}`);
+
+    console.log(`Owner: ${await contracts.walletController.getOwner()}`);
+
+    console.log(`market: ${await contracts.walletController.marketAddress()}`);
 }
 
 main().then(

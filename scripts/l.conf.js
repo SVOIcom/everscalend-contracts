@@ -31,7 +31,7 @@ module.exports = {
             // Use tonos-cli to generate your phrase
             // !!! Never commit it in your repos !!!
             keys: {
-                phrase: 'melody clarify hand pause kit economy bind behind grid witness cheap tomorrow',
+                phrase: '',
                 amount: 20,
             }
         },
@@ -58,7 +58,7 @@ module.exports = {
             // Use tonos-cli to generate your phrase
             // !!! Never commit it in your repos !!!
             keys: {
-                phrase: 'melody clarify hand pause kit economy bind behind grid witness cheap tomorrow',
+                phrase: '',
                 amount: 20,
             }
         },

@@ -19,6 +19,8 @@ async function main() {
     console.log(`Code version: ${await contracts.userAccount.contractCodeVersion()}`);
 
     console.log(`Borrow lock: ${await contracts.userAccount.borrowLock()}`);
+
+    console.log(`Liquidation lock: ${await contracts.userAccount.liquidationLock()}`)
 }
 
 main().then(

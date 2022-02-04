@@ -148,6 +148,14 @@ class UserAccount extends ContractTemplate {
         });
     }
 
+    async liquidationLock() {
+        return await this.call({
+            method: 'liquidationLock',
+            params: {},
+            keyPair: this.keyPair
+        })
+    }
+
     async contractCodeVersion() {
         return await this.call({
             method: 'contractCodeVersion',

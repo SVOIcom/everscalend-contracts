@@ -6,14 +6,17 @@ async function main() {
         market: true
     });
 
-    let payload = await contracts.marketsAggregator.removeMarket({
-        marketId: 1
-    });
+    for (let marketId = 0; marketId <= 1; marketId ++) {
+        console.log(`Deleting market: ${marketId}`);
+        let payload = await contracts.marketsAggregator.removeMarket({
+            marketId
+        });
 
-    await contracts.msigWallet.transfer({
-        destination: contracts.marketsAggregator.address,
-        payload
-    });
+        await contracts.msigWallet.transfer({
+            destination: contracts.marketsAggregator.address,
+            payload
+        });
+    }
 }
 
 main().then(

@@ -11,7 +11,7 @@ async function main() {
 
     await contracts.msigWallet.transfer({
         destination: contracts.marketsAggregator.address,
-        value: convertCrystal(4, 'nano'),
+        value: convertCrystal(1, 'nano'),
         payload: payload
     });
 }

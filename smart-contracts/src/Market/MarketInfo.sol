@@ -13,6 +13,7 @@ struct MarketInfo {
     uint256 vTokenBalance;
     uint256 totalBorrowed;
     uint256 totalReserve;
+    uint256 totalCash;
 
     fraction index;
     fraction baseRate;

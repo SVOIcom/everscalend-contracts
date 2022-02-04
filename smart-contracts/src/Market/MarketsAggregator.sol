@@ -36,31 +36,56 @@ contract MarketAggregator is IRoles, IUpgradableContract, IMarketOracle, IMarket
     /*********************************************************************************************************/
     // Base functions - for deploying and upgrading contract
     // We are using Platform so constructor is not available
+    /**
+     * @notice Create contract and set it's owner
+     * @param _newOwner Address of owner
+     */
     constructor(address _newOwner) public {
         tvm.accept();
         _owner = _newOwner;
     }
 
-    function upgradeContractCode(TvmCell code, TvmCell updateParams, uint32 codeVersion) override external canUpgrade {
-        tvm.accept();
+    /**
+     * @notice Upgrade contract code
+     * @param code New code of contract
+     * @param updateParams Params used for update
+     * @param codeVersion New version of contract
+     */
+    function upgradeContractCode(TvmCell code, TvmCell updateParams, uint32 codeVersion) override external onlyOwner {
+        if (codeVersion > contractCodeVersion) {
+            tvm.accept();
 
-        tvm.setcode(code);
-        tvm.setCurrentCode(code);
+            tvm.setcode(code);
+            tvm.setCurrentCode(code);
 
-        onCodeUpgrade(
-            _owner,
-            userAccountManager,
-            walletController,
-            oracle,
-            markets,
-            tokenPrices,
-            modules,
-            updateParams,
-            codeVersion
-        );
+            onCodeUpgrade(
+                _owner,
+                userAccountManager,
+                walletController,
+                oracle,
+                markets,
+                tokenPrices,
+                modules,
+                updateParams,
+                codeVersion
+            );
+        } else {
+            address(_owner).transfer({value: 0, flag: MsgFlag.REMAINING_GAS});
+        }
     }
 
     // mappings like createdMarkets, tokensToMarkets are derivatives from markets mapping and must be recreated
+    /**
+     * @notice Reset storage, set new code and update stored values
+     * @param owner Owner of contract
+     * @param _userAccountManager Address of UserAccountManager
+     * @param _walletController Address of Wallet controller
+     * @param _oracle Address of Oracle
+     * @param _markets State of markets
+     * @param _tokenPrices Token prices
+     * @param _modules Addresses of modules
+     * @param _codeVersion New code version
+     */
     function onCodeUpgrade(
         address owner,
         address _userAccountManager,
@@ -97,6 +122,12 @@ contract MarketAggregator is IRoles, IUpgradableContract, IMarketOracle, IMarket
     /*********************************************************************************************************/
     // Cache update functions
 
+    /**
+     * @notice This function is used to receive market deltas from markets and update market states
+     * @dev To resume module execution IModule interface is used
+     * @param marketsDelta Changes of markets
+     * @param args TvmCell used to resume execution after callback
+     */
     function receiveCacheDelta(mapping(uint32 => MarketDelta) marketsDelta, TvmCell args) external override onlyModule {
         tvm.rawReserve(msg.value, 2);
         for ((uint32 marketId, MarketDelta marketDelta): marketsDelta) {
@@ -110,11 +141,9 @@ contract MarketAggregator is IRoles, IUpgradableContract, IMarketOracle, IMarket
         }(args, markets, tokenPrices);
     }
 
-    // process: 
-    // acquireInterest - to get deltas from time passing by....
-    // update deltas - change real parameters
-    // acquireInterest to update parameters - to update parameters such as exchange rate and etc
-
+    /**
+     * @notice Update all markets parameters
+     */
     function _updateAllMarkets() internal {
         for ((uint32 marketId,) : markets) {
             _acquireInterest(marketId);
@@ -122,7 +151,10 @@ contract MarketAggregator is IRoles, IUpgradableContract, IMarketOracle, IMarket
         }
     }
 
-
+    /**
+     * @notice Acquire interest from borrowed tokens
+     * @param marketId Id of market to update 
+     */
     function _acquireInterest(uint32 marketId) internal {
         MarketInfo mi = markets[marketId];
         uint256 dt = now - mi.lastUpdateTime;
@@ -149,57 +181,76 @@ contract MarketAggregator is IRoles, IUpgradableContract, IMarketOracle, IMarket
         markets[marketId].lastUpdateTime = now;
     }
 
+    /**
+     * @notice recalculate real parameters
+     * @param marketId Id of market to update
+     * @param marketDelta Deltas of parameters
+     */
     function _updateMarketDelta(uint32 marketId, MarketDelta marketDelta) internal {
+        MarketInfo mi = markets[marketId];
         if (
             marketDelta.realTokenBalance.delta != 0 &&
             marketDelta.realTokenBalance.positive
         ) {
-            markets[marketId].realTokenBalance += marketDelta.realTokenBalance.delta;
+            mi.realTokenBalance += marketDelta.realTokenBalance.delta;
         } else {
-            markets[marketId].realTokenBalance -= marketDelta.realTokenBalance.delta;
+            mi.realTokenBalance -= marketDelta.realTokenBalance.delta;
         }
 
         if (
             marketDelta.totalBorrowed.delta != 0 &&
             marketDelta.totalBorrowed.positive
         ) {
-            markets[marketId].totalBorrowed += marketDelta.totalBorrowed.delta;
+            mi.totalBorrowed += marketDelta.totalBorrowed.delta;
         } else {
-            markets[marketId].totalBorrowed -= marketDelta.totalBorrowed.delta;
+            if (marketDelta.totalBorrowed.delta > mi.totalBorrowed)
+                mi.totalBorrowed = 0;
+            else
+                mi.totalBorrowed -= marketDelta.totalBorrowed.delta;
         }
 
         if (
             marketDelta.vTokenBalance.delta != 0 &&
             marketDelta.vTokenBalance.positive
         ) {
-            markets[marketId].vTokenBalance += marketDelta.vTokenBalance.delta;
+            mi.vTokenBalance += marketDelta.vTokenBalance.delta;
         } else {
-            markets[marketId].vTokenBalance -= marketDelta.vTokenBalance.delta;
+            mi.vTokenBalance -= marketDelta.vTokenBalance.delta;
         }
 
         if (
             marketDelta.totalReserve.delta != 0 &&
             marketDelta.totalReserve.positive
         ) {
-            markets[marketId].totalReserve += marketDelta.totalReserve.delta;
+            mi.totalReserve += marketDelta.totalReserve.delta;
         } else {
-            markets[marketId].totalReserve -= marketDelta.totalReserve.delta;
+            mi.totalReserve -= marketDelta.totalReserve.delta;
         }
+
+        mi.totalCash = mi.realTokenBalance - mi.totalReserve;
+        markets[marketId] = mi;
     }
 
+    /**
+     * @notice Function to recalculate exchange rate of vTokens -> real tokens
+     */
     function _updateExchangeRate(uint32 marketId) internal {
-        if (markets[marketId].vTokenBalance != 0) {
+        MarketInfo mi = markets[marketId];
+        if (mi.vTokenBalance != 0) {
             fraction exchangeRate = MarketOperations.calculateExchangeRate(
-                markets[marketId].realTokenBalance,
-                markets[marketId].totalBorrowed,
-                markets[marketId].totalReserve,
-                markets[marketId].vTokenBalance
+                mi.realTokenBalance,
+                mi.totalBorrowed,
+                mi.totalReserve,
+                mi.vTokenBalance
             );
-            markets[marketId].exchangeRate = exchangeRate;
+            mi.exchangeRate = exchangeRate;
+            markets[marketId] = mi;
         }
     }
 
-
+    /**
+     * @notice This function is used to sync cache between modules
+     */
     function updateModulesCache() external view override onlyOwner {
         tvm.rawReserve(msg.value, 2);
         uint128 valueToTransfer = msg.value / (moduleAmount + 1);
@@ -239,6 +290,19 @@ contract MarketAggregator is IRoles, IUpgradableContract, IMarketOracle, IMarket
 
     /*********************************************************************************************************/
     // Manage markets functions
+
+    /**
+     * @notice Create new market
+     * @dev Uniquness of market is decided using marketId
+     * @param marketId Id of new market, must be unique
+     * @param realToken Address of token that is used as real token
+     * @param _baseRate Base borrowing rate
+     * @param _utilizationMultiplier Utilization rate
+     * @param _reserveFactor What percentage of borrowed tokens will be placed in reserves
+     * @param _exchangeRate Initial exchange rate, it will change later
+     * @param _collateralFactor Collateral factor of market
+     * @param _liquidationMultiplier Liquidation multiplier
+     */
     function createNewMarket(
         uint32 marketId, 
         address realToken,
@@ -261,6 +325,7 @@ contract MarketAggregator is IRoles, IUpgradableContract, IMarketOracle, IMarket
                 vTokenBalance: 0,
                 totalBorrowed: 0,
                 totalReserve: 0,
+                totalCash: 0,
 
                 index: one,
                 baseRate: _baseRate,
@@ -281,6 +346,16 @@ contract MarketAggregator is IRoles, IUpgradableContract, IMarketOracle, IMarket
         }
     }
 
+    /**
+     * @notice Update parameters of market
+     * @param marketId Id of market to update
+     * @param _baseRate Base borrowing rate
+     * @param _utilizationMultiplier Utilization rate
+     * @param _reserveFactor What percentage of borrowed tokens will be placed in reserves
+     * @param _exchangeRate Initial exchange rate, it will change later
+     * @param _collateralFactor Collateral factor of market
+     * @param _liquidationMultiplier Liquidation multiplier
+     */
     function updateMarketParameters(
         uint32 marketId,
         fraction _baseRate,
@@ -312,6 +387,10 @@ contract MarketAggregator is IRoles, IUpgradableContract, IMarketOracle, IMarket
         address(_owner).transfer({value: 0, flag: MsgFlag.REMAINING_GAS});
     }
 
+    /**
+     * @notice THIS FUNCTION IS USED TO DELETE MARKET. THIS MAY KILL SYSTEM
+     * @param marketId Market to delete
+     */
     function removeMarket(
         uint32 marketId
     ) external canChangeParams {
@@ -329,7 +408,12 @@ contract MarketAggregator is IRoles, IUpgradableContract, IMarketOracle, IMarket
     /*********************************************************************************************************/
     // Operations with modules
 
-    function addModule(uint8 operationId, address module) external canChangeParams {
+    /**
+     * @notice Add module to system
+     * @param operationId Id of module operation
+     * @param module Address of module
+     */
+    function addModule(uint8 operationId, address module) external onlyOwner {
         tvm.rawReserve(msg.value, 2);
         modules[operationId] = module;
         isModule[module] = true;
@@ -339,7 +423,11 @@ contract MarketAggregator is IRoles, IUpgradableContract, IMarketOracle, IMarket
         }(_owner, markets, tokenPrices);
     }
 
-    function removeModule(uint8 operationId) external canChangeParams {
+    /**
+     * @notice THIS OPERATION REMOVES MODULE. OPERATION WILL NOT BE AVAILABLE
+     * @param operationId Operation id of module
+     */
+    function removeModule(uint8 operationId) external onlyOwner {
         tvm.rawReserve(msg.value, 2);
         delete isModule[modules[operationId]];
         delete modules[operationId];
@@ -347,17 +435,33 @@ contract MarketAggregator is IRoles, IUpgradableContract, IMarketOracle, IMarket
         address(_owner).transfer({value: 0, flag: MsgFlag.REMAINING_GAS});
     }
 
+    /**
+     * @notice Perform operation that occured in wallet controller
+     * @param operationId Id of operation to perform
+     * @param tokenRoot Address of token root, mapped inside to marketId
+     * @param args Encoded operation arguments 
+     */
     function performOperationWalletController(uint8 operationId, address tokenRoot, TvmCell args) external override view onlyWalletController {
         uint32 marketId = tokensToMarkets[tokenRoot];
         TvmCell payload = _createOperationUpdatePayload(operationId, marketId, args);
         _updateAllPrices(payload);
     }
 
+    /**
+     * @notice Perform operation that occured in user account
+     * @param operationId Id of operation to perform
+     * @param marketId Id of market
+     * @param args Encoded operation arguments
+     */
     function performOperationUserAccountManager(uint8 operationId, uint32 marketId, TvmCell args) external override view onlyUserAccountManager {
         TvmCell payload = _createOperationUpdatePayload(operationId, marketId, args);
         _updateAllPrices(payload);
     }
 
+    /**
+     * @notice this function is used as callback by module to fetch latest information
+     * @param args TvmCell with parameters to resume operation
+     */
     function performOperation(TvmCell args) internal view {
         TvmSlice ts = args.toSlice();
 
@@ -373,13 +477,15 @@ contract MarketAggregator is IRoles, IUpgradableContract, IMarketOracle, IMarket
         }
     }
 
-    function calculateUserAccountHealth(
-        address tonWallet, 
-        address gasTo, 
-        mapping(uint32 => uint256) supplyInfo, 
-        mapping(uint32 => BorrowInfo) borrowInfo, 
-        TvmCell dataToTransfer
-    ) external override onlyUserAccountManager {
+    /**
+     * @notice Calculate user account health
+     * @param tonWallet Address of owner's wallet
+     * @param gasTo Address where to transfer remaining gas
+     * @param supplyInfo Supply information of user account
+     * @param borrowInfo Borrow information of user account
+     * @param dataToTransfer Data that is transferred from user account
+     */
+    function calculateUserAccountHealth(address tonWallet, address gasTo, mapping(uint32 => uint256) supplyInfo, mapping(uint32 => BorrowInfo) borrowInfo, TvmCell dataToTransfer) external override onlyUserAccountManager {
         tvm.rawReserve(msg.value, 2);
 
         _updateAllMarkets();
@@ -402,6 +508,29 @@ contract MarketAggregator is IRoles, IUpgradableContract, IMarketOracle, IMarket
         }
     }
 
+    /**
+     * @notice calculate borrow info
+     * @param borrowInfo Borrow information of user
+     * @param updatedIndexes Updated indexes 
+     */
+    function _calculateBorrowInfo(mapping(uint32 => BorrowInfo) borrowInfo, mapping(uint32 => fraction) updatedIndexes) internal returns(mapping (uint32=>uint256) userBorrowInfo) {
+        for ((uint32 marketId, BorrowInfo bi): borrowInfo) {
+            if (bi.tokensBorrowed != 0) {
+                fraction tmpf = borrowInfo[marketId].tokensBorrowed.numFMul(updatedIndexes[marketId]);
+                tmpf = tmpf.fDiv(bi.index);
+                userBorrowInfo[marketId] = tmpf.toNum();
+            } else {
+                userBorrowInfo[marketId] = 0;
+            }
+        }
+    }
+
+    /**
+     * @notice Pack operation parameters
+     * @param operationId Id of operation
+     * @param marketId Id of market that is performing oeration
+     * @param args Arguments of operation
+     */
     function _createOperationUpdatePayload(uint8 operationId, uint32 marketId, TvmCell args) internal pure returns (TvmCell payload) {
         TvmBuilder tb;
         tb.store(operationId);
@@ -410,6 +539,13 @@ contract MarketAggregator is IRoles, IUpgradableContract, IMarketOracle, IMarket
         return tb.toCell();
     }
 
+    /**
+     * @notice Request token payout
+     * @param tonWallet Owner's address 
+     * @param userTip3Wallet Address of user tip-3 wallet
+     * @param marketId Id of market from where to withdraw tokens
+     * @param toPayout Amount of tokens to transfer
+     */
     function requestTokenPayout(address tonWallet, address userTip3Wallet, uint32 marketId, uint256 toPayout) external override view onlyUserAccountManager {
         tvm.rawReserve(msg.value, 2);
 
@@ -422,6 +558,7 @@ contract MarketAggregator is IRoles, IUpgradableContract, IMarketOracle, IMarket
     // Interactions with oracle
 
     /**
+     * @notice Request price update
      * @param tokenRoot Address of TIP-3 token root to update
      * @param payload Payload that will be passed during update and received after
      */
@@ -433,6 +570,7 @@ contract MarketAggregator is IRoles, IUpgradableContract, IMarketOracle, IMarket
     }
 
     /**
+     * @notice receive updated price
      * @param tokenRoot Address of updated TIP-3 token root
      * @param nom Nominator of token's price to usd
      * @param denom Denominator of token's price to usd
@@ -442,6 +580,7 @@ contract MarketAggregator is IRoles, IUpgradableContract, IMarketOracle, IMarket
     }
 
     /**
+     * @notice Update all received prices
      * @param payload Payload that will be passed during update and received after
      */
     function _updateAllPrices(TvmCell payload) internal view {
@@ -452,7 +591,9 @@ contract MarketAggregator is IRoles, IUpgradableContract, IMarketOracle, IMarket
     }
 
     /**
+     * @notice Receive udpated prices
      * @param updatedPrices Updated prices of all tokens that exist in oracle
+     * @param payload TvmCell with some info
      */
     function receiveAllUpdatedPrices(mapping(address => MarketPriceInfo) updatedPrices, TvmCell payload) external override onlyOracle {
         for((address t, MarketPriceInfo mpi): updatedPrices) {

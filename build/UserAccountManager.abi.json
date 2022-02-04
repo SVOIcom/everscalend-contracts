@@ -219,7 +219,6 @@
 				{"name":"marketToLiquidate","type":"uint32"},
 				{"name":"tokensToSeize","type":"uint256"},
 				{"name":"tokensToReturn","type":"uint256"},
-				{"name":"tokensFromReserve","type":"uint256"},
 				{"components":[{"name":"tokensBorrowed","type":"uint256"},{"components":[{"name":"nom","type":"uint256"},{"name":"denom","type":"uint256"}],"name":"index","type":"tuple"}],"name":"borrowInfo","type":"tuple"}
 			],
 			"outputs": [
@@ -234,8 +233,7 @@
 				{"name":"marketId","type":"uint32"},
 				{"name":"marketToLiquidate","type":"uint32"},
 				{"name":"vTokensToGrant","type":"uint256"},
-				{"name":"tokensToReturn","type":"uint256"},
-				{"name":"tokensFromReserve","type":"uint256"}
+				{"name":"tokensToReturn","type":"uint256"}
 			],
 			"outputs": [
 			]
@@ -247,7 +245,7 @@
 				{"name":"targetUser","type":"address"},
 				{"name":"tip3UserWallet","type":"address"},
 				{"name":"marketId","type":"uint32"},
-				{"name":"tokensProvided","type":"uint256"}
+				{"name":"tokensToReturn","type":"uint256"}
 			],
 			"outputs": [
 			]
@@ -257,10 +255,9 @@
 			"inputs": [
 				{"name":"tonWallet","type":"address"},
 				{"name":"tip3UserWallet","type":"address"},
+				{"name":"userToUnlock","type":"address"},
 				{"name":"marketId","type":"uint32"},
-				{"name":"marketToLiquidate","type":"uint32"},
-				{"name":"tokensToReturn","type":"uint256"},
-				{"name":"tokensFromReserve","type":"uint256"}
+				{"name":"tokensToReturn","type":"uint256"}
 			],
 			"outputs": [
 			]

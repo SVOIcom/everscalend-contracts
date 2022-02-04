@@ -3,6 +3,7 @@ const tryToExtractAddress = require("../../errorHandler/errorHandler");
 const configuration = require("../../scripts.conf");
 const { loadEssentialContracts } = require("./_loadEssentialContracts");
 const { writeContractData } = require("../migration");
+const { convertCrystal } = require("locklift/locklift/utils");
 
 
 /**
@@ -28,8 +29,8 @@ async function deployContract({
             contract: contractToDeploy,
             constructorParams,
             initParams,
-            keyPair: contracts.msigWallet.keyPair
-        });
+            keyPair: contracts.msigWallet.keyPair,
+        }, convertCrystal(2, 'nano'));
         console.log(`Contract was deployed at address: ${contractToDeploy.address}`);
     } catch (err) {
         let address = tryToExtractAddress(err);

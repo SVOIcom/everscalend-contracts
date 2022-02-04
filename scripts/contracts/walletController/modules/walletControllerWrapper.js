@@ -145,6 +145,22 @@ class WalletController extends ContractTemplate {
             keyPair: this.keyPair
         });
     }
+
+    async getOwner() {
+        return await this.call({
+            method: 'getOwner',
+            params: {},
+            keyPair: this.keyPair
+        });
+    }
+
+    async marketAddress() {
+        return await this.call({
+            method: 'marketAddress',
+            params: {},
+            keyPair: this.keyPair
+        })
+    }
 }
 
 module.exports = {

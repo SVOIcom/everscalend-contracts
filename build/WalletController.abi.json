@@ -234,14 +234,6 @@
 			]
 		},
 		{
-			"name": "vTokenRoots",
-			"inputs": [
-			],
-			"outputs": [
-				{"name":"vTokenRoots","type":"map(address,bool)"}
-			]
-		},
-		{
 			"name": "tokensToMarkets",
 			"inputs": [
 			],

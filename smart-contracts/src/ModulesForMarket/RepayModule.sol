@@ -4,22 +4,16 @@ import './interfaces/IModule.sol';
 
 import '../utils/libraries/MsgFlag.sol';
 
-contract RepayModule is IRoles, IModule, IContractStateCache, IContractAddressSG, IRepayModule, IUpgradableContract {
+contract RepayModule is ACModule, IRepayModule, IUpgradableContract {
     using UFO for uint256;
     using FPO for fraction;
-
-    address marketAddress;
-    address userAccountManager;
-    uint32 public contractCodeVersion;
-
-    mapping (uint32 => MarketInfo) marketInfo;
-    mapping (address => fraction) tokenPrices;
 
     event RepayBorrow(uint32 marketId, MarketDelta marketDelta, address tonWallet, uint256 tokenDelta);
 
     constructor(address _newOwner) public {
         tvm.accept();
         _owner = _newOwner;
+        actionId = OperationCodes.REPAY_TOKENS;
     }
 
     function upgradeContractCode(TvmCell code, TvmCell updateParams, uint32 codeVersion) external override canUpgrade {
@@ -48,6 +42,7 @@ contract RepayModule is IRoles, IModule, IContractStateCache, IContractAddressSG
     ) private {
         tvm.accept();
         tvm.resetStorage();
+        actionId = OperationCodes.REPAY_TOKENS;
         _owner = owner;
         marketAddress = _marketAddress;
         userAccountManager = _userAccountManager;
@@ -56,39 +51,11 @@ contract RepayModule is IRoles, IModule, IContractStateCache, IContractAddressSG
         contractCodeVersion = _codeVersion;
     }
 
-    function sendActionId() external override view responsible returns(uint8) {
-        return {flag: MsgFlag.REMAINING_GAS} OperationCodes.REPAY_TOKENS;
-    }
+    function unlock(address, TvmCell) external override onlyOwner {}
 
-    function getModuleState() external override view returns(mapping(uint32 => MarketInfo), mapping(address => fraction)) {
-        return(marketInfo, tokenPrices);
-    }
-
-    function setMarketAddress(address _marketAddress) external override canChangeParams {
-        tvm.rawReserve(msg.value, 2);
-        marketAddress = _marketAddress;
-        address(_owner).transfer({value: 0, flag: MsgFlag.REMAINING_GAS});
-    }
-
-    function setUserAccountManager(address _userAccountManager) external override canChangeParams {
-        tvm.rawReserve(msg.value, 2);
-        userAccountManager = _userAccountManager;
-        address(_owner).transfer({value: 0, flag: MsgFlag.REMAINING_GAS});
-    }
-
-    function getContractAddresses() external override view responsible returns(address _owner, address _marketAddress, address _userAccountManager) {
-        return {flag: MsgFlag.REMAINING_GAS} (_owner, marketAddress, userAccountManager);
-    }
-
-    function updateCache(address tonWallet, mapping(uint32 => MarketInfo) _marketInfo, mapping(address => fraction) _tokenPrices) external override onlyMarket {
-        tvm.rawReserve(msg.value , 2);
-        marketInfo = _marketInfo;
-        tokenPrices = _tokenPrices;
-        tonWallet.transfer({value: 0, flag: MsgFlag.REMAINING_GAS});
-    }
-
+    // Ok without locking, as no tokens are leaving contract, can only deposit
+    // Coefficients will be rebalanced in MarketsAggregator
     function performAction(uint32 marketId, TvmCell args, mapping (uint32 => MarketInfo) _marketInfo, mapping (address => fraction) _tokenPrices) external override onlyMarket {
-        tvm.rawReserve(msg.value, 2);
         marketInfo = _marketInfo;
         tokenPrices = _tokenPrices;
         TvmSlice ts = args.toSlice();
@@ -100,12 +67,6 @@ contract RepayModule is IRoles, IModule, IContractStateCache, IContractAddressSG
         }(tonWallet, userTip3Wallet, tokensReceived, marketId, updatedIndexes);
     }
 
-    function _createUpdatedIndexes() internal view returns(mapping(uint32 => fraction) updatedIndexes) {
-        for ((uint32 marketId, MarketInfo mi): marketInfo) {
-            updatedIndexes[marketId] = mi.index;
-        }
-    }
-
     function repayLoan(
         address tonWallet,
         address userTip3Wallet,
@@ -113,7 +74,7 @@ contract RepayModule is IRoles, IModule, IContractStateCache, IContractAddressSG
         uint32 marketId,
         BorrowInfo borrowInfo
     ) external override onlyUserAccountManager {
-        tvm.rawReserve(msg.value, 0);
+        tvm.rawReserve(msg.value, 2);
         mapping(uint32 => MarketDelta) marketsDelta;
         MarketDelta marketDelta;
 
@@ -161,9 +122,6 @@ contract RepayModule is IRoles, IModule, IContractStateCache, IContractAddressSG
     }
 
     function resumeOperation(TvmCell args, mapping(uint32 => MarketInfo) _marketInfo, mapping (address => fraction) _tokenPrices) external override onlyMarket {
-        tvm.rawReserve(msg.value, 2);
-        marketInfo = _marketInfo;
-        tokenPrices = _tokenPrices;
         TvmSlice ts = args.toSlice();
         (uint32 marketId, address tonWallet, address userTip3Wallet, uint256 tokensToReturn) = ts.decode(uint32, address, address, uint256);
         TvmSlice borrowInfoStorage = ts.loadRefAsSlice();
@@ -171,15 +129,5 @@ contract RepayModule is IRoles, IModule, IContractStateCache, IContractAddressSG
         IUAMUserAccount(userAccountManager).writeRepayInformation{
             flag: MsgFlag.REMAINING_GAS
         }(tonWallet, userTip3Wallet, marketId, tokensToReturn, borrowInfo);
-    }
-
-    modifier onlyMarket() {
-        require(msg.sender == marketAddress);
-        _;
-    }
-
-    modifier onlyUserAccountManager() {
-        require(msg.sender == userAccountManager);
-        _;
     }
 }

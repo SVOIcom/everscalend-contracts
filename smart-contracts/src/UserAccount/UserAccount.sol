@@ -250,6 +250,34 @@ contract UserAccount is IUserAccount, IUserAccountData, IUpgradableContract, IUs
     }
 
     /*********************************************************************************************************/
+    // conversion functions
+
+    function convertVTokens(uint256 amount, uint32 marketId) external override view onlyOwner {
+        IUAMUserAccount(userAccountManager).requestVTokensConversion{
+            flag: MsgFlag.REMAINING_GAS
+        }(owner, amount, marketId);
+    }
+
+    function requestConversionInfo(uint256 _amount, uint32 _marketId) external override view onlyUserAccountManager {
+        mapping(uint32 => BorrowInfo) borrowInfo;
+        mapping(uint32 => uint256) supplyInfo;
+
+        (borrowInfo, supplyInfo) = _getBorrowSupplyInfo();
+        IUAMUserAccount(userAccountManager).receiveConversionInfo{
+            flag: MsgFlag.REMAINING_GAS
+        }(owner, _amount, _marketId, supplyInfo, borrowInfo);
+    }
+
+    function writeConversionInfo(uint256 _amount, bool positive, uint32 marketId) external override onlyUserAccountManager {
+        if(positive) {
+            markets[marketId].suppliedTokens += _amount;
+        } else {
+            markets[marketId].suppliedTokens -= _amount;
+        }
+        _checkUserAccountHealth(owner, _createConversionUnlockPayload());
+    }
+
+    /*********************************************************************************************************/
     // Check account health functions
 
     function checkUserAccountHealth(address gasTo) external override onlyExecutor {
@@ -288,6 +316,10 @@ contract UserAccount is IUserAccount, IUserAccountData, IUpgradableContract, IUs
             IUAMUserAccount(userAccountManager).returnAndSupply{
                 flag: MsgFlag.REMAINING_GAS
             }(tonWallet, userTip3Wallet, userToUnlock, marketId, tokensToReturn);
+        } else if (operation == OperationCodes.RETURN_AND_UNLOCK_CONVERSION) {
+            IUAMUserAccount(userAccountManager).unlockAfterConversion{
+                flag: MsgFlag.REMAINING_GAS
+            }(owner);
         } else {
             address(gasTo).transfer({value: 0, flag: MsgFlag.REMAINING_GAS});
         }
@@ -366,6 +398,12 @@ contract UserAccount is IUserAccount, IUserAccountData, IUpgradableContract, IUs
         op.store(userTip3Wallet);
         op.store(marketId);
         op.store(tokensToSend);
+        return op.toCell();
+    }
+
+    function _createConversionUnlockPayload() internal pure returns(TvmCell) {
+        TvmBuilder op;
+        op.store(OperationCodes.RETURN_AND_UNLOCK_CONVERSION);
         return op.toCell();
     }
 

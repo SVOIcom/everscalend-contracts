@@ -10,10 +10,12 @@ const contracts = [
     'ModulesForMarket/WithdrawModule',
     'ModulesForMarket/RepayModule',
     'ModulesForMarket/LiquidationModule',
+    'ModulesForMarket/vTokensConversion',
     'Oracle/Oracle',
     'UserAccount/UserAccount',
     'UserAccount/UserAccountManager',
     'WalletController/WalletController',
+    'WalletController/WalletController3.1',
     'utils/test/TestSwapPair'
 ]
 

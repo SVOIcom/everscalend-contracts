@@ -133,6 +133,84 @@ class Module extends ContractTemplate {
     }
 }
 
+class ConversionModule extends Module {
+    /**
+     * @param {Object} param0 
+     * @param {Number} param0.marketId
+     * @param {String} param0.vTokenAddress
+     * @returns 
+     */
+    async setMarketToken({marketId, vTokenAddress}) {
+        return await encodeMessageBody({
+            contract: this,
+            functionName: 'setMarketToken',
+            input: {
+                marketId,
+                vTokenAddress
+            }
+        })
+    }
+
+    async removeMarket({marketId}) {
+        return await encodeMessageBody({
+            contract: this,
+            functionName: 'removeMarket',
+            input: {
+                marketId
+            }
+        })
+    }
+
+    async marketIdToTokenRoot() {
+        return await this.call({
+            method: '_marketIdToTokenRoot',
+            params: {},
+            keyPair: this.keyPair
+        })
+    }
+
+    async marketToWallet() {
+        return await this.call({
+            method: '_marketToWallet',
+            params: {},
+            keyPair: this.keyPair
+        })
+    }
+
+    async tokenRootToMarketId() {
+        return await this.call({
+            method: '_tokenRootToMarketId',
+            params: {},
+            keyPair: this.keyPair
+        })
+    }
+
+    async tokenToWallet() {
+        return await this.call({
+            method: '_tokenToWallet',
+            params: {},
+            keyPair: this.keyPair
+        })
+    }
+
+    async knownTokenRoots() {
+        return await this.call({
+            method: '_knownTokenRoots',
+            params: {},
+            keyPair: this.keyPair
+        })
+    }
+
+    async knownWallets() {
+        return await this.call({
+            method: '_knownWallets',
+            params: {},
+            keyPair: this.keyPair
+        })
+    }
+}
+
 module.exports = {
-    Module
+    Module,
+    ConversionModule
 }

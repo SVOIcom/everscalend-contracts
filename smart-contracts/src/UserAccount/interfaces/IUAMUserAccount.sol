@@ -31,6 +31,13 @@ interface IUAMUserAccount {
     function abortLiquidation(address tonWallet, address targetUser, address tip3UserWallet, uint32 marketId, uint256 tokensProvided) external view;
     function returnAndSupply(address tonWallet, address tip3UserWallet, address userToUnlock, uint32 marketId, uint256 tokensToReturn) external view;
 
+    // Conversion operations
+    function requestVTokensConversion(address owner, uint256 amount, uint32 marketId) external view;
+    function requestConversionInfo(address _user, uint256 _amount, uint32 _marketId) external view;
+    function receiveConversionInfo(address _user, uint256 _amount, uint32 marketId, mapping (uint32 => uint256) supplyInfo, mapping (uint32 => BorrowInfo) borrowInfo) external view;
+    function writeConversionInfo(address _user, uint256 _amount, bool positive, uint32 marketId) external view;
+    function unlockAfterConversion(address _user) external view;
+
     // Check user account health operation
     function requestUserAccountHealthCalculation(address tonWallet) external view;
     function calculateUserAccountHealth(address tonWallet, address gasTo, mapping(uint32 => uint256) supplyInfo, mapping(uint32 => BorrowInfo) borrowInfo, TvmCell dataToTransfer) external view;

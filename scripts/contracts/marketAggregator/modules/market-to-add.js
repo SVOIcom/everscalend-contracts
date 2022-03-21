@@ -64,7 +64,7 @@ function marketsToAdd() {
     } else if (configuration.network == 'mainnet') {
         return [{
             marketId: 0,
-            realToken: '0:751b6e22687891bdc1706c8d91bf77281237f7453d27dc3106c640ec165a2abf',
+            realToken: '0:a519f99bb5d6d51ef958ed24d337ad75a1c770885dcd42d51d6663f9fcdacfb2',
             _baseRate: fraction(2, 100 * (365*24*60*60)),
             _utilizationMultiplier: fraction(20, 100 * (365*24*60*60)),
             _reserveFactor: fraction(15, 100),
@@ -73,7 +73,7 @@ function marketsToAdd() {
             _liquidationMultiplier: fraction(108, 100)
         }, {
             marketId: 1,
-            realToken: '0:0ee39330eddb680ce731cd6a443c71d9069db06d149a9bec9569d1eb8d04eb37',
+            realToken: '0:a49cd4e158a9a15555e624759e2e4e766d22600b7800d891e46f9291f044a93d',
             _baseRate: fraction(2, 100 * (365*24*60*60)),
             _utilizationMultiplier: fraction(20, 100 * (365*24*60*60)),
             _reserveFactor: fraction(30, 100),

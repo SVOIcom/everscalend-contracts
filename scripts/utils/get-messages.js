@@ -47,6 +47,7 @@ async function main() {
         oracle: true,
         userAM: true,
         walletC: true,
+        walletCVersion: 2,
         testSP: true,
         user: true
     });

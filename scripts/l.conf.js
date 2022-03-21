@@ -31,7 +31,7 @@ module.exports = {
             // Use tonos-cli to generate your phrase
             // !!! Never commit it in your repos !!!
             keys: {
-                phrase: '',
+                phrase: 'melody clarify hand pause kit economy bind behind grid witness cheap tomorrow',
                 amount: 20,
             }
         },
@@ -58,7 +58,7 @@ module.exports = {
             // Use tonos-cli to generate your phrase
             // !!! Never commit it in your repos !!!
             keys: {
-                phrase: '',
+                phrase: 'melody clarify hand pause kit economy bind behind grid witness cheap tomorrow',
                 amount: 20,
             }
         },
@@ -77,7 +77,7 @@ module.exports = {
 
             // This giver is default local-node giver
             giver: {
-                address: '0:a007f6b1686dabfcb686bb8152d330d19971b707fbd842199915c677e9822d31',
+                address: '',
                 abi: { "ABI version": 2, "header": ["time", "expire"], "functions": [ { "name": "constructor", "inputs": [ ], "outputs": [ ] }, { "name": "sendGrams", "inputs": [ {"name":"dest","type":"address"}, {"name":"amount","type":"uint64"} ], "outputs": [ ] } ], "data": [ ], "events": [ ]},
                 key: '',
             },

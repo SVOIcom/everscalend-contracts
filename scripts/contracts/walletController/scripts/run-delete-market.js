@@ -3,7 +3,8 @@ const { loadEssentialContracts } = require("../../../utils/contracts");
 async function main() {
     let contracts = await loadEssentialContracts({
         wallet: true,
-        walletC: true
+        walletC: true,
+        walletCVersion: 2
     });
 
     let payload = await contracts.walletController.removeMarket({

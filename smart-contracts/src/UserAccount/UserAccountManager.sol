@@ -412,6 +412,67 @@ contract UserAccountManager is IRoles, IUpgradableContract, IUserAccountManager,
     }
 
     /*********************************************************************************************************/
+    // Convert vTokens to TIP-3 tokens
+
+    function requestVTokensConversion(
+        address owner, 
+        uint256 amount, 
+        uint32 marketId
+    ) external override view onlyValidUserAccountNoReserve(owner) {
+        TvmBuilder tb;
+        tb.store(owner);
+        tb.store(amount);
+        tb.store(marketId);
+        IMarketOperations(marketAddress).performOperationUserAccountManager{
+            flag: MsgFlag.ALL_NOT_RESERVED
+        }(OperationCodes.CONVERT_VTOKENS, marketId, tb.toCell());
+    }
+
+    function requestConversionInfo(
+        address _user, 
+        uint256 _amount, 
+        uint32 _marketId
+    ) external override view onlyModule(OperationCodes.CONVERT_VTOKENS) {
+        address userAccount = _calculateUserAccountAddress(_user); 
+        IUserAccountData(userAccount).requestConversionInfo{
+            flag: MsgFlag.ALL_NOT_RESERVED
+        }(_amount, _marketId);
+    }
+
+    function receiveConversionInfo(
+        address _user, 
+        uint256 _amount, 
+        uint32 marketId, 
+        mapping (uint32 => uint256) supplyInfo,
+        mapping (uint32 => BorrowInfo) borrowInfo
+    ) external override view onlyValidUserAccountNoReserve(_user) {
+        IConversionModule(modules[OperationCodes.CONVERT_VTOKENS]).performConversion{
+            flag: MsgFlag.ALL_NOT_RESERVED
+        }(_user, _amount, marketId, supplyInfo, borrowInfo);
+    }
+
+    function writeConversionInfo(
+        address _user, 
+        uint256 _amount, 
+        bool positive, 
+        uint32 marketId
+    ) external override view onlyValidUserAccountNoReserve(_user) {
+        address userAccount = _calculateUserAccountAddress(_user); 
+        IUserAccountData(userAccount).writeConversionInfo{
+            flag: MsgFlag.ALL_NOT_RESERVED
+        }(_amount, positive, marketId);
+    }
+
+    function unlockAfterConversion(
+        address _user
+    ) external override view onlyValidUserAccountNoReserve(_user) {
+        TvmCell empty;
+        ILockable(modules[OperationCodes.CONVERT_VTOKENS]).unlock{
+            flag: MsgFlag.ALL_NOT_RESERVED
+        }(_user, empty);
+    }
+
+    /*********************************************************************************************************/
     // Account health calculation
 
     function requestUserAccountHealthCalculation(address tonWallet) external override view executor {
@@ -455,7 +516,7 @@ contract UserAccountManager is IRoles, IUpgradableContract, IUserAccountManager,
         }(tonWallet, userTip3Wallet, marketId, toPayout);
     }
 
-    function withdrawExtraTons(address tonWallet) external onlyOwner {
+    function withdrawExtraTons(address tonWallet) external view onlyOwner {
         tvm.accept();
         address(tonWallet).transfer({value: 0, flag: MsgFlag.ALL_NOT_RESERVED});
     }

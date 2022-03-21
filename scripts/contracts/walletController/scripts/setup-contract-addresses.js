@@ -1,5 +1,3 @@
-const { convertCrystal } = require("locklift/locklift/utils");
-const { operationFlags } = require("../../../utils/common");
 const { loadEssentialContracts } = require("../../../utils/contracts");
 
 async function main() {
@@ -7,7 +5,8 @@ async function main() {
         wallet: true,
         market: true,
         userAM: true,
-        walletC: true
+        walletC: true,
+        walletCVersion: 2
     });
 
     let marketPayload = await contracts.walletController.setMarketAddress({

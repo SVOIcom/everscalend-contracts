@@ -1,6 +1,7 @@
 pragma ton-solidity >= 0.47.0;
 
 import { ILockable, ACLockable } from './ILockable.sol';
+import '../libraries/ModuleErrors.sol';
 
 import '../../Market/MarketInfo.sol';
 import '../../Market/libraries/MarketOperations.sol';
@@ -85,15 +86,15 @@ abstract contract ACModule is ACLockable, IModule, IContractAddressSG, IContract
         }
     }
 
-    function getGeneralLock() external returns(bool) {
+    function getGeneralLock() external view returns(bool) {
         return _isLocked();
     }
 
-    function userLock(address user) external returns(bool) {
+    function userLock(address user) external view returns(bool) {
         return _isUserLocked(user);
     }
 
-    function usersLock() external returns(mapping(address => bool)) {
+    function usersLock() external view returns(mapping(address => bool)) {
         return _userLocks;
     }
 
@@ -116,12 +117,18 @@ abstract contract ACModule is ACLockable, IModule, IContractAddressSG, IContract
     }
 
     modifier onlyUserAccountManager() {
-        require(msg.sender == userAccountManager);
+        require(
+            msg.sender == userAccountManager,
+            ModuleErrors.ONLY_USER_ACCOUNT_MANAGER
+        );
         _;
     }
 
     modifier onlyMarket() {
-        require(msg.sender == marketAddress);
+        require(
+            msg.sender == marketAddress,
+            ModuleErrors.ONLY_MARKET
+        );
         tvm.rawReserve(msg.value, 2);
         _;
     }
@@ -177,6 +184,16 @@ interface ILiquidationModule {
         uint256 tokensProvided, 
         mapping(uint32 => uint256) supplyInfo, 
         mapping(uint32 => BorrowInfo) borrowInfo
+    ) external;
+}
+
+interface IConversionModule {
+    function performConversion(
+        address _user, 
+        uint256 _amount, 
+        uint32 marketId, 
+        mapping (uint32 => uint256) supplyInfo,
+        mapping (uint32 => BorrowInfo) borrowInfo
     ) external;
 }
 

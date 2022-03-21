@@ -263,6 +263,57 @@
 			]
 		},
 		{
+			"name": "requestVTokensConversion",
+			"inputs": [
+				{"name":"owner","type":"address"},
+				{"name":"amount","type":"uint256"},
+				{"name":"marketId","type":"uint32"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "requestConversionInfo",
+			"inputs": [
+				{"name":"_user","type":"address"},
+				{"name":"_amount","type":"uint256"},
+				{"name":"_marketId","type":"uint32"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "receiveConversionInfo",
+			"inputs": [
+				{"name":"_user","type":"address"},
+				{"name":"_amount","type":"uint256"},
+				{"name":"marketId","type":"uint32"},
+				{"name":"supplyInfo","type":"map(uint32,uint256)"},
+				{"components":[{"name":"tokensBorrowed","type":"uint256"},{"components":[{"name":"nom","type":"uint256"},{"name":"denom","type":"uint256"}],"name":"index","type":"tuple"}],"name":"borrowInfo","type":"map(uint32,tuple)"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "writeConversionInfo",
+			"inputs": [
+				{"name":"_user","type":"address"},
+				{"name":"_amount","type":"uint256"},
+				{"name":"positive","type":"bool"},
+				{"name":"marketId","type":"uint32"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "unlockAfterConversion",
+			"inputs": [
+				{"name":"_user","type":"address"}
+			],
+			"outputs": [
+			]
+		},
+		{
 			"name": "requestUserAccountHealthCalculation",
 			"inputs": [
 				{"name":"tonWallet","type":"address"}

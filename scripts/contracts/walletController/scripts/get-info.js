@@ -2,7 +2,7 @@ const { pp } = require("../../../utils/common");
 const { loadEssentialContracts } = require("../../../utils/contracts");
 
 async function main() {
-    let contracts = await loadEssentialContracts({walletC: true});
+    let contracts = await loadEssentialContracts({walletC: true, walletCVersion: 2});
 
     console.log(`Real token roots: ${pp(await contracts.walletController.getRealTokenRoots())}`);
 

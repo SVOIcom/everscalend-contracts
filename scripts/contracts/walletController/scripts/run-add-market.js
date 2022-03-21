@@ -5,7 +5,8 @@ async function main() {
     let contracts = await loadEssentialContracts({
         wallet: true,
         market: true,
-        walletC: true
+        walletC: true,
+        walletCVersion: 2
     });
 
     let allMarketInfo = await contracts.marketsAggregator.getAllMarkets();

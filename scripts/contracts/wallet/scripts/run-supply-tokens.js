@@ -6,7 +6,8 @@ const { Tip3Wallet } = require("../modules/tip3WalletWrapper");
 async function main() {
     let contracts = await loadEssentialContracts({
         wallet: true,
-        walletC: true
+        walletC: true,
+        walletCVersion: 2
     });
 
     let realTip3 = new Tip3Wallet(await loadContractData(contracts.locklift, 'RealTip3'));

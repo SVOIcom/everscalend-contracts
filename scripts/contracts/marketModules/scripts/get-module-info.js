@@ -23,6 +23,15 @@ async function main() {
         console.log(`Contract code version: ${await module.contractCodeVersion()}`);
         console.log(`Owner address: ${await module.getOwner()}`);
         console.log(`ActionId: ${await module.sendActionId()}`);
+        if (moduleName == 'conversion') {
+            console.log(`Market id to token root: ${contracts.modules.conversion.marketIdToTokenRoot()}`);
+            console.log(`Market to wallet: ${await contracts.modules.conversion.marketToWallet()}`);
+            console.log(`Token root to market id: ${await contracts.modules.conversion.tokenRootToMarketId()}`);
+            console.log(`Token to wallet: ${await contracts.modules.conversion.tokenToWallet()}`);
+            console.log(`Known token roots: ${await contracts.modules.conversion.knownTokenRoots()}`);
+            console.log(`Known wallets: ${await contracts.modules.conversion.knownWallets()}`);
+
+        }
     }
 }
 

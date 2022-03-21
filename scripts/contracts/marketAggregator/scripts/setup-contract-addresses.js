@@ -9,6 +9,7 @@ async function main() {
         oracle: true,
         userAM: true,
         walletC: true,
+        walletCVersion: 2,
         marketModules: true
     });
 

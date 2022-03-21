@@ -153,6 +153,34 @@
 			]
 		},
 		{
+			"name": "convertVTokens",
+			"inputs": [
+				{"name":"amount","type":"uint256"},
+				{"name":"marketId","type":"uint32"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "requestConversionInfo",
+			"inputs": [
+				{"name":"_amount","type":"uint256"},
+				{"name":"_marketId","type":"uint32"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "writeConversionInfo",
+			"inputs": [
+				{"name":"_amount","type":"uint256"},
+				{"name":"positive","type":"bool"},
+				{"name":"marketId","type":"uint32"}
+			],
+			"outputs": [
+			]
+		},
+		{
 			"name": "checkUserAccountHealth",
 			"inputs": [
 				{"name":"gasTo","type":"address"}
